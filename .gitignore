@@ -2,3 +2,5 @@ nbproject
 bower_components
 node_modules
 .DS_Store
+config.codekit
+.sass-cache

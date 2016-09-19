@@ -1,0 +1,20 @@
+{
+    "name": "jQuery Verbose Calendar",
+    "version": "1.0.0",
+    "main": [
+        "src/javascripts/jquery.calendar/jquery.calendar.min.js",
+        "src/javascripts/jquery.calendar/calendar.css"
+    ],
+    "ignore": [],
+    "dependencies": {
+        "jquery": ">=1.8"
+    },
+    "author": {
+        "name": "phena109"
+    },
+    "keywords": [
+        "jquery-plugin",
+        "calendar"
+    ],
+    "license": "MIT"
+}

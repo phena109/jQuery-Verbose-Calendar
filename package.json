@@ -1,0 +1,32 @@
+{
+  "name": "jquery-verbose-calendar",
+  "version": "1.0.0",
+  "description": "Why another jQuery calendar? I needed something very specific for a personal project which led me to created this calendar. After making it I thought it was pretty neat-o :)",
+  "main": "src/js/jquery.calendar.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/phena109/jQuery-Verbose-Calendar.git"
+  },
+  "keywords": [
+    "calendar"
+  ],
+  "author": "phena109",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/phena109/jQuery-Verbose-Calendar/issues"
+  },
+  "homepage": "https://github.com/phena109/jQuery-Verbose-Calendar#readme",
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.5",
+    "grunt-contrib-concat": "~0.4.0",
+    "grunt-contrib-sass": "^1.0.0",
+    "grunt-contrib-uglify": "~0.5.0",
+    "grunt-contrib-watch": "^1.0.0"
+  }
+}

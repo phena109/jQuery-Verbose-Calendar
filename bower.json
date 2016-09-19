@@ -2,8 +2,8 @@
     "name": "jquery-verbose-calendar",
     "version": "1.0.0",
     "main": [
-        "dist/jquery.calendar.min.js",
-        "dist/calendar.css"
+        "src/js/jquery.calendar.js",
+        "dist/css/calendar.css"
     ],
     "ignore": [],
     "dependencies": {

@@ -1,14 +1,17 @@
 {
   "name": "jquery-verbose-calendar",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Why another jQuery calendar? I needed something very specific for a personal project which led me to created this calendar. After making it I thought it was pretty neat-o :)",
-  "main": "src/js/jquery.calendar.js",
+  "main": "dist/js/jquery-verbose-calendar.js",
+  "dependencies": {
+    "jquery": ">=1.9"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/phena109/jQuery-Verbose-Calendar.git"
+    "url": "https://github.com/phena109/jQuery-Verbose-Calendar.git"
   },
   "keywords": [
     "calendar"

@@ -1,5 +1,5 @@
 /*
- * jquery-verbose-calendar v0.1.1 - 2016-09-20
+ * jquery-verbose-calendar v0.1.2 - 2016-09-20
  * https://github.com/phena109/jQuery-Verbose-Calendar#readme
 
 MIT License
@@ -248,6 +248,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     };
 
 })(jQuery, window, document);
+
 
 
 // DELETE THIS IF YOU ALREADY SOURCE TIPSY ------------------------------------

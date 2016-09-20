@@ -1,21 +1,22 @@
 {
-    "name": "jquery-verbose-calendar",
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/phena109/jQuery-Verbose-Calendar.git"
-    },
-    "author": {
-        "name": "phena109"
-    },
-    "main": "dist/js/jquery-verbose-calendar.js",
-    "keywords": [
-        "jquery-plugin",
-        "calendar"
-    ],
-    "license": "MIT",
-    "ignore": [],
-    "dependencies": {
-        "jquery": ">=1.8"
-    },
-    "version": "0.1.1"
+  "name": "jquery-verbose-calendar",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/phena109/jQuery-Verbose-Calendar.git"
+  },
+  "author": {
+    "name": "phena109"
+  },
+  "main": "dist/js/jquery-verbose-calendar.js",
+  "keywords": [
+    "jquery-plugin",
+    "calendar"
+  ],
+  "license": "MIT",
+  "ignore": [],
+  "dependencies": {
+    "jquery": ">=1.8",
+    "jquery.scrollTo": ">=2.1.2"
+  },
+  "version": "0.1.1"
 }

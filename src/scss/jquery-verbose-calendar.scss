@@ -1,4 +1,11 @@
+#calendar, #calendar * {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
 #calendar {
+
     $year_size: 99px;
     $cell_size: 49px;
 

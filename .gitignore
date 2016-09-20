@@ -4,3 +4,4 @@ node_modules
 .DS_Store
 config.codekit
 .sass-cache
+npm-debug.log

@@ -1,12 +1,10 @@
 (function ($, window, document) {
 
-    //
     // Globals
-    var pluginName = 'calendar',
-            pl = null,
-            d = new Date();
+    var pluginName = 'calendar';
+    var pl = null;
+    var d = new Date();
 
-    //
     // Defaults
     var defaults = {
         d: d,
@@ -19,18 +17,8 @@
     };
 
     month_array = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December'
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
     ];
 
     month_days = [
@@ -48,7 +36,6 @@
         '31' // dec
     ];
 
-    //
     // Main Plugin Object
     function Calendar(element, options) {
         pl = this;
@@ -57,25 +44,19 @@
         this._defaults = defaults;
         this._name = pluginName;
 
-
-        //
         // Begin
         this.init();
     }
 
-
     $.extend(Calendar.prototype, {
         init: function () {
-            //
             // Call print - who knows, maybe more will be added to the init function...
             this.print();
         },
         print: function (year) {
-            //
             // Pass in any year you damn like.
             var the_year = (year) ? parseInt(year) : parseInt(pl.options.year);
 
-            //
             // First, clear the element
             $(this.element).empty();
 
@@ -83,55 +64,44 @@
                 display: 'none'
             });
 
-            //
             // Append parent div to the element
             $(this.element).append('<div id=\"calendar\"></div>');
 
-            //
             // Set reference for calendar DOM object
             var $_calendar = $('#calendar');
 
-            //
             // Let's append the year
             $.each(the_year.toString().split(''), function (i, o) {
                 $_calendar.append('<div class=\"year\">' + o + '</div>');
             });
 
-            //
             // Navigation arrows
             $_calendar.append('<div id=\"arrows\"></div>');
 
-            //
             // DOM object reference for arrows
             $_arrows = $('#arrows');
             $_arrows.append('<div class=\"next\"></div>');
             $_arrows.append('<div class=\"prev\"></div>');
 
-            //
             // Add a clear for the floated elements
             $_calendar.append('<div class=\"clear\"></div>');
 
-            //
             // Loop over the month arrays, loop over the characters in teh string, and apply to divs.
             $.each(month_array, function (i, o) {
 
-                //
                 // Create a scrollto marker
                 $_calendar.append("<div id='" + o + "'></div>");
 
                 $.each(month_array[i].split(''), function (i, o) {
 
-                    //
                     // Looping over characters, apply them to divs
                     $_calendar.append('<div class=\"cell bold\">' + o + '</div>');
 
                 });
 
-                //
                 // Add a clear for the floated elements
                 $_calendar.append('<div class=\"clear\"></div>');
 
-                //
                 // Check for leap year
                 if (o === 'February') {
                     if (pl.isLeap(the_year)) {
@@ -152,27 +122,22 @@
                         }
                     }
 
-                    //
                     // Looping over numbers, apply them to divs
                     $_calendar.append("<div data-date='" + (parseInt(i) + 1) + '/' + j + '/' + the_year + "' class='cell day " + today + "'>" + j + '</div>');
                 }
 
-                //
                 // Add a clear for the floated elements
                 $_calendar.append('<div class=\"clear\"></div>');
             });
 
-            //
             // Loop over the elements and show them one by one.
             for (k = 0; k < $('.cell').length; k++) {
                 (function (j) {
                     setTimeout(function () {
 
-                        //
                         // Fade the cells in
                         $($('.cell')[j]).fadeIn('fast', function () {
 
-                            //
                             // Set titles for tipsy once in DOM
                             $(this).attr('original-title', pl.returnFormattedDate($(this).attr('data-date')));
 
@@ -192,7 +157,6 @@
                 })(k);
             }
 
-            //
             // Scroll to month
             if (the_year === pl.options.current_year && pl.options.scroll_to_date) {
                 var print_finished = false;
@@ -210,7 +174,6 @@
                 }, 200);
             }
 
-            //
             // Tipsy
             $('.cell').tipsy({
                 gravity: pl.options.tipsy_gravity
@@ -246,7 +209,6 @@
         }
     });
 
-    //
     // Previous / Next Year on click events
     $(document).on('click', '.next', function () {
         pl.options.year = parseInt(pl.options.year) + 1;
@@ -261,7 +223,6 @@
     });
 
 
-    //
     // Plugin Instantiation
     $.fn[pluginName] = function (options) {
         return this.each(function () {

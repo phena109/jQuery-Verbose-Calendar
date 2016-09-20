@@ -94,7 +94,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 	    // First, clear the element
 	    $(this.element).empty();
 
-	    $('.label').css({
+	    $('.cell').css({
 	      display: 'none'
 	    });
 
@@ -138,7 +138,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 	        //
 	        // Looping over characters, apply them to divs
-	        $_calendar.append('<div class=\"label bold\">' + o + '</div>');
+	        $_calendar.append('<div class=\"cell bold\">' + o + '</div>');
 
 	      });
 
@@ -169,7 +169,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 	        //
 	        // Looping over numbers, apply them to divs
-	        $_calendar.append("<div data-date='" + (parseInt(i) + 1) + '/' + j + '/' + the_year + "' class='label day " + today + "'>" + j + '</div>');
+	        $_calendar.append("<div data-date='" + (parseInt(i) + 1) + '/' + j + '/' + the_year + "' class='cell day " + today + "'>" + j + '</div>');
 	      }
 
 	      //
@@ -179,13 +179,13 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 	    //
 	    // Loop over the elements and show them one by one.
-	    for (k = 0; k < $('.label').length; k++) {
+	    for (k = 0; k < $('.cell').length; k++) {
 	      (function(j) {
 	        setTimeout(function() {
 
 	          //
-	          // Fade the labels in
-	          $($('.label')[j]).fadeIn('fast', function() {
+	          // Fade the cells in
+	          $($('.cell')[j]).fadeIn('fast', function() {
 
 	            //
 	            // Set titles for tipsy once in DOM
@@ -213,7 +213,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 	      var print_finished = false;
 	      var print_check = setInterval(function() {
 	        print_finished = true;
-	        $.each($(".label"), function() {
+	        $.each($(".cell"), function() {
 	          if ($(this).css("display") === "none") {
 	            print_finished = false;
 	          }
@@ -227,7 +227,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 	    //
 	    // Tipsy
-	    $('.label').tipsy({
+	    $('.cell').tipsy({
 	      gravity: pl.options.tipsy_gravity
 	    });
 		},

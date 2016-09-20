@@ -1,5 +1,5 @@
 /*
- * jquery-verbose-calendar v0.1.0 - 2016-09-19
+ * jquery-verbose-calendar v0.1.1 - 2016-09-20
  * https://github.com/phena109/jQuery-Verbose-Calendar#readme
 
 MIT License

@@ -83,24 +83,24 @@
                 display: 'none'
             });
 
-            // Append parent div to the element
-            $(this.element).append('<div id="calendar"></div>');
-
             // Set reference for calendar DOM object
-            var $_calendar = $('#calendar');
+            var $_calendar = $('<div class="calendar"></div>');
+
+            // Append parent div to the element
+            $(this.element).append($_calendar);
 
             // Let's append the year
             $.each(the_year.toString().split(''), function (i, o) {
                 $_calendar.append('<div class="year"><span>' + o + '</span></div>');
             });
 
-            // Navigation arrows
-            $_calendar.append('<div id="arrows"></div>');
-
             // DOM object reference for arrows
-            var $_arrows = $('#arrows');
-            $_arrows.append('<div class="next"></div>');
-            $_arrows.append('<div class="prev"></div>');
+            var _arrow_obj = $('<div class="arrows"></div>');
+            _arrow_obj.append('<div class="next"></div>');
+            _arrow_obj.append('<div class="prev"></div>');
+
+            // Navigation arrows
+            $_calendar.append(_arrow_obj);
 
             // Add a clear for the floated elements
             $_calendar.append('<div class="clear-row"></div>');
@@ -108,8 +108,10 @@
             // Loop over the month arrays, loop over the characters in teh string, and apply to divs.
             $.each(month_array, function (i, o) {
 
+                var lco = o.toLowerCase();
+
                 // Create a scrollto marker
-                $_calendar.append("<div id='" + o + "'></div>");
+                $_calendar.append("<div class='" + lco + "'></div>");
 
                 $.each(month_array[i].split(''), function (i, o) {
 
@@ -122,7 +124,7 @@
                 $_calendar.append('<div class="clear-row"></div>');
 
                 // Check for leap year
-                if (o === 'February') {
+                if (lco === 'february') {
                     if (pl.isLeap(the_year)) {
                         month_days[i] = 29;
                     } else {
@@ -132,7 +134,6 @@
 
                 for (var j = 1; j <= parseInt(month_days[i]); j++) {
 
-                    //
                     // Check for today
                     var today = '';
                     if (i === pl.options.month && the_year === d.getFullYear()) {
@@ -240,7 +241,6 @@
 
         pl.print(pl.options.year);
     });
-
 
     // Plugin Instantiation
     $.fn[pluginName] = function (options) {

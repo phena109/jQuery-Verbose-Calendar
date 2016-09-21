@@ -1,5 +1,5 @@
 /*
- * jquery-verbose-calendar v0.1.2 - 2016-09-20
+ * jquery-verbose-calendar v0.1.3 - 2016-09-21
  * https://github.com/phena109/jQuery-Verbose-Calendar#readme
 
 MIT License
@@ -14,6 +14,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
  */
 (function ($, window, document) {
+    'use strict';
 
     // Globals
     var pluginName = 'calendar';
@@ -27,16 +28,19 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         today: d.getDate(),
         month: d.getMonth(),
         current_year: d.getFullYear(),
-        tipsy_gravity: 's',
+        // tipsy_gravity become a fallback, but only support 'n','e','w','s'
+        // because that's what supported in bootstrap
+        tipsy_gravity: null,
+        tooltip_placement: 'top',
         scroll_to_date: true
     };
 
-    month_array = [
+    var month_array = [
         'January', 'February', 'March', 'April', 'May', 'June',
         'July', 'August', 'September', 'October', 'November', 'December'
     ];
 
-    month_days = [
+    var month_days = [
         '31', // jan
         '28', // feb
         '31', // mar
@@ -53,11 +57,26 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
     // Main Plugin Object
     function Calendar(element, options) {
+
+        var tipsy_fallback_map = {
+            // Tipsy's direction is relative to the tip itself rather than
+            // the element.
+            n: 'auto bottom',
+            e: 'auto left',
+            w: 'auto right',
+            s: 'auto top'
+        };
+
         pl = this;
         this.element = element;
         this.options = $.extend({}, defaults, options);
         this._defaults = defaults;
         this._name = pluginName;
+
+        if (this.options.tipsy_gravity !== null) {
+            var placement = this.options.tipsy_gravity.substr(0, 1);
+            this.options.tooltip_placement = tipsy_fallback_map[placement];
+        }
 
         // Begin
         this.init();
@@ -80,26 +99,26 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             });
 
             // Append parent div to the element
-            $(this.element).append('<div id=\"calendar\"></div>');
+            $(this.element).append('<div id="calendar"></div>');
 
             // Set reference for calendar DOM object
             var $_calendar = $('#calendar');
 
             // Let's append the year
             $.each(the_year.toString().split(''), function (i, o) {
-                $_calendar.append('<div class=\"year\">' + o + '</div>');
+                $_calendar.append('<div class="year"><span>' + o + '</span></div>');
             });
 
             // Navigation arrows
-            $_calendar.append('<div id=\"arrows\"></div>');
+            $_calendar.append('<div id="arrows"></div>');
 
             // DOM object reference for arrows
-            $_arrows = $('#arrows');
-            $_arrows.append('<div class=\"next\"></div>');
-            $_arrows.append('<div class=\"prev\"></div>');
+            var $_arrows = $('#arrows');
+            $_arrows.append('<div class="next"></div>');
+            $_arrows.append('<div class="prev"></div>');
 
             // Add a clear for the floated elements
-            $_calendar.append('<div class=\"clear\"></div>');
+            $_calendar.append('<div class="clear-row"></div>');
 
             // Loop over the month arrays, loop over the characters in teh string, and apply to divs.
             $.each(month_array, function (i, o) {
@@ -110,12 +129,12 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 $.each(month_array[i].split(''), function (i, o) {
 
                     // Looping over characters, apply them to divs
-                    $_calendar.append('<div class=\"cell bold\">' + o + '</div>');
+                    $_calendar.append('<div class="cell bold"><span>' + o + '</span></div>');
 
                 });
 
                 // Add a clear for the floated elements
-                $_calendar.append('<div class=\"clear\"></div>');
+                $_calendar.append('<div class="clear-row"></div>');
 
                 // Check for leap year
                 if (o === 'February') {
@@ -126,7 +145,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                     }
                 }
 
-                for (j = 1; j <= parseInt(month_days[i]); j++) {
+                for (var j = 1; j <= parseInt(month_days[i]); j++) {
 
                     //
                     // Check for today
@@ -138,23 +157,20 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                     }
 
                     // Looping over numbers, apply them to divs
-                    $_calendar.append("<div data-date='" + (parseInt(i) + 1) + '/' + j + '/' + the_year + "' class='cell day " + today + "'>" + j + '</div>');
+                    $_calendar.append("<div data-date='" + (parseInt(i) + 1) + '/' + j + '/' + the_year + "' class='cell day " + today + "'><span>" + j + '</span></div>');
                 }
 
                 // Add a clear for the floated elements
-                $_calendar.append('<div class=\"clear\"></div>');
+                $_calendar.append('<div class="clear-row"></div>');
             });
 
             // Loop over the elements and show them one by one.
-            for (k = 0; k < $('.cell').length; k++) {
+            for (var k = 0; k < $('.cell').length; k++) {
                 (function (j) {
                     setTimeout(function () {
 
                         // Fade the cells in
                         $($('.cell')[j]).fadeIn('fast', function () {
-
-                            // Set titles for tipsy once in DOM
-                            $(this).attr('original-title', pl.returnFormattedDate($(this).attr('data-date')));
 
                             $(this).on('click', function () {
                                 if (typeof pl.options.click_callback == 'function') {
@@ -189,9 +205,12 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 }, 200);
             }
 
-            // Tipsy
-            $('.cell').tipsy({
-                gravity: pl.options.tipsy_gravity
+            // Bootstrap tooltip
+            $('.cell').tooltip({
+                placement: pl.options.tooltip_placement,
+                title: function () {
+                    return pl.returnFormattedDate($(this).attr('data-date'));
+                }
             });
         },
         isLeap: function (year) {
@@ -248,301 +267,3 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     };
 
 })(jQuery, window, document);
-
-
-
-// DELETE THIS IF YOU ALREADY SOURCE TIPSY ------------------------------------
-// tipsy, facebook style tooltips for jquery
-// version 1.0.0a
-// (c) 2008-2010 jason frame [jason@onehackoranother.com]
-// released under the MIT license
-
-(function ($) {
-
-    function maybeCall(thing, ctx) {
-        return (typeof thing == 'function') ? (thing.call(ctx)) : thing;
-    }
-    ;
-
-    function Tipsy(element, options) {
-        this.$element = $(element);
-        this.options = options;
-        this.enabled = true;
-        this.fixTitle();
-    }
-    ;
-
-    Tipsy.prototype = {
-        show: function () {
-            var title = this.getTitle();
-            if (title && this.enabled) {
-                var $tip = this.tip();
-
-                $tip.find('.tipsy-inner')[this.options.html ? 'html' : 'text'](title);
-                $tip[0].className = 'tipsy'; // reset classname in case of dynamic gravity
-                $tip.remove().css({
-                    top: 0,
-                    left: 0,
-                    visibility: 'hidden',
-                    display: 'block'
-                }).prependTo(document.body);
-
-                var pos = $.extend({}, this.$element.offset(), {
-                    width: this.$element[0].offsetWidth,
-                    height: this.$element[0].offsetHeight
-                });
-
-                var actualWidth = $tip[0].offsetWidth,
-                        actualHeight = $tip[0].offsetHeight,
-                        gravity = maybeCall(this.options.gravity, this.$element[0]);
-
-                var tp;
-                switch (gravity.charAt(0)) {
-                    case 'n':
-                        tp = {
-                            top: pos.top + pos.height + this.options.offset,
-                            left: pos.left + pos.width / 2 - actualWidth / 2
-                        };
-                        break;
-                    case 's':
-                        tp = {
-                            top: pos.top - actualHeight - this.options.offset,
-                            left: pos.left + pos.width / 2 - actualWidth / 2
-                        };
-                        break;
-                    case 'e':
-                        tp = {
-                            top: pos.top + pos.height / 2 - actualHeight / 2,
-                            left: pos.left - actualWidth - this.options.offset
-                        };
-                        break;
-                    case 'w':
-                        tp = {
-                            top: pos.top + pos.height / 2 - actualHeight / 2,
-                            left: pos.left + pos.width + this.options.offset
-                        };
-                        break;
-                }
-
-                if (gravity.length == 2) {
-                    if (gravity.charAt(1) == 'w') {
-                        tp.left = pos.left + pos.width / 2 - 15;
-                    } else {
-                        tp.left = pos.left + pos.width / 2 - actualWidth + 15;
-                    }
-                }
-
-                $tip.css(tp).addClass('tipsy-' + gravity);
-                $tip.find('.tipsy-arrow')[0].className = 'tipsy-arrow tipsy-arrow-' + gravity.charAt(0);
-                if (this.options.className) {
-                    $tip.addClass(maybeCall(this.options.className, this.$element[0]));
-                }
-
-                if (this.options.fade) {
-                    $tip.stop().css({
-                        opacity: 0,
-                        display: 'block',
-                        visibility: 'visible'
-                    }).animate({
-                        opacity: this.options.opacity
-                    });
-                } else {
-                    $tip.css({
-                        visibility: 'visible',
-                        opacity: this.options.opacity
-                    });
-                }
-            }
-        },
-        hide: function () {
-            if (this.options.fade) {
-                this.tip().stop().fadeOut(function () {
-                    $(this).remove();
-                });
-            } else {
-                this.tip().remove();
-            }
-        },
-        fixTitle: function () {
-            var $e = this.$element;
-            if ($e.attr('title') || typeof ($e.attr('original-title')) != 'string') {
-                $e.attr('original-title', $e.attr('title') || '').removeAttr('title');
-            }
-        },
-        getTitle: function () {
-            var title, $e = this.$element,
-                    o = this.options;
-            this.fixTitle();
-            var title, o = this.options;
-            if (typeof o.title == 'string') {
-                title = $e.attr(o.title == 'title' ? 'original-title' : o.title);
-            } else if (typeof o.title == 'function') {
-                title = o.title.call($e[0]);
-            }
-            title = ('' + title).replace(/(^\s*|\s*$)/, '');
-            return title || o.fallback;
-        },
-        tip: function () {
-            if (!this.$tip) {
-                this.$tip = $('<div class="tipsy"></div>').html('<div class="tipsy-arrow"></div><div class="tipsy-inner"></div>');
-            }
-            return this.$tip;
-        },
-        validate: function () {
-            if (!this.$element[0].parentNode) {
-                this.hide();
-                this.$element = null;
-                this.options = null;
-            }
-        },
-        enable: function () {
-            this.enabled = true;
-        },
-        disable: function () {
-            this.enabled = false;
-        },
-        toggleEnabled: function () {
-            this.enabled = !this.enabled;
-        }
-    };
-
-    $.fn.tipsy = function (options) {
-
-        if (options === true) {
-            return this.data('tipsy');
-        } else if (typeof options == 'string') {
-            var tipsy = this.data('tipsy');
-            if (tipsy) {
-                tipsy[options]();
-            }
-            return this;
-        }
-
-        options = $.extend({}, $.fn.tipsy.defaults, options);
-
-        function get(ele) {
-            var tipsy = $.data(ele, 'tipsy');
-            if (!tipsy) {
-                tipsy = new Tipsy(ele, $.fn.tipsy.elementOptions(ele, options));
-                $.data(ele, 'tipsy', tipsy);
-            }
-            return tipsy;
-        }
-
-        function enter() {
-            var tipsy = get(this);
-            tipsy.hoverState = 'in';
-            if (options.delayIn == 0) {
-                tipsy.show();
-            } else {
-                tipsy.fixTitle();
-                setTimeout(function () {
-                    if (tipsy.hoverState == 'in') {
-                        tipsy.show();
-                    }
-                }, options.delayIn);
-            }
-        }
-        ;
-
-        function leave() {
-            var tipsy = get(this);
-            tipsy.hoverState = 'out';
-            if (options.delayOut == 0) {
-                tipsy.hide();
-            } else {
-                setTimeout(function () {
-                    if (tipsy.hoverState == 'out') {
-                        tipsy.hide();
-                    }
-                }, options.delayOut);
-            }
-        }
-        ;
-
-        if (!options.live)
-            this.each(function () {
-                get(this);
-            });
-
-        if (options.trigger != 'manual') {
-            var binder = options.live ? 'live' : 'bind';
-            var eventIn = options.trigger == 'hover' ? 'mouseenter' : 'focus';
-            var eventOut = options.trigger == 'hover' ? 'mouseleave' : 'blur';
-            this[binder](eventIn, enter)[binder](eventOut, leave);
-        }
-
-        return this;
-
-    };
-
-    $.fn.tipsy.defaults = {
-        className: null,
-        delayIn: 0,
-        delayOut: 0,
-        fade: false,
-        fallback: '',
-        gravity: 'n',
-        html: false,
-        live: false,
-        offset: 0,
-        opacity: 0.8,
-        title: 'title',
-        trigger: 'hover'
-    };
-
-    // Overwrite this method to provide options on a per-element basis.
-    // For example, you could store the gravity in a 'tipsy-gravity' attribute:
-    // return $.extend({}, options, {gravity: $(ele).attr('tipsy-gravity') || 'n' });
-    // (remember - do not modify 'options' in place!)
-    $.fn.tipsy.elementOptions = function (ele, options) {
-        return $.metadata ? $.extend({}, options, $(ele).metadata()) : options;
-    };
-
-    $.fn.tipsy.autoNS = function () {
-        return $(this).offset().top > ($(document).scrollTop() + $(window).height() / 2) ? 's' : 'n';
-    };
-
-    $.fn.tipsy.autoWE = function () {
-        return $(this).offset().left > ($(document).scrollLeft() + $(window).width() / 2) ? 'e' : 'w';
-    };
-
-    /**
-     * yields a closure of the supplied parameters, producing a function that takes
-     * no arguments and is suitable for use as an autogravity function like so:
-     *
-     * @param margin (int) - distance from the viewable region edge that an
-     *        element should be before setting its tooltip's gravity to be away
-     *        from that edge.
-     * @param prefer (string, e.g. 'n', 'sw', 'w') - the direction to prefer
-     *        if there are no viewable region edges effecting the tooltip's
-     *        gravity. It will try to vary from this minimally, for example,
-     *        if 'sw' is preferred and an element is near the right viewable
-     *        region edge, but not the top edge, it will set the gravity for
-     *        that element's tooltip to be 'se', preserving the southern
-     *        component.
-     */
-    $.fn.tipsy.autoBounds = function (margin, prefer) {
-        return function () {
-            var dir = {
-                ns: prefer[0],
-                ew: (prefer.length > 1 ? prefer[1] : false)
-            },
-            boundTop = $(document).scrollTop() + margin,
-                    boundLeft = $(document).scrollLeft() + margin,
-                    $this = $(this);
-
-            if ($this.offset().top < boundTop)
-                dir.ns = 'n';
-            if ($this.offset().left < boundLeft)
-                dir.ew = 'w';
-            if ($(window).width() + $(document).scrollLeft() - $this.offset().left < margin)
-                dir.ew = 'e';
-            if ($(window).height() + $(document).scrollTop() - $this.offset().top < margin)
-                dir.ns = 's';
-
-            return dir.ns + (dir.ew ? dir.ew : '');
-        };
-    };
-
-})(jQuery);

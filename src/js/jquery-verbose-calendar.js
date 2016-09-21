@@ -1,4 +1,5 @@
 (function ($, window, document) {
+    'use strict';
 
     // Globals
     var pluginName = 'calendar';
@@ -16,12 +17,12 @@
         scroll_to_date: true
     };
 
-    month_array = [
+    var month_array = [
         'January', 'February', 'March', 'April', 'May', 'June',
         'July', 'August', 'September', 'October', 'November', 'December'
     ];
 
-    month_days = [
+    var month_days = [
         '31', // jan
         '28', // feb
         '31', // mar
@@ -65,26 +66,26 @@
             });
 
             // Append parent div to the element
-            $(this.element).append('<div id=\"calendar\"></div>');
+            $(this.element).append('<div id="calendar"></div>');
 
             // Set reference for calendar DOM object
             var $_calendar = $('#calendar');
 
             // Let's append the year
             $.each(the_year.toString().split(''), function (i, o) {
-                $_calendar.append('<div class=\"year\">' + o + '</div>');
+                $_calendar.append('<div class="year"><span>' + o + '</span></div>');
             });
 
             // Navigation arrows
-            $_calendar.append('<div id=\"arrows\"></div>');
+            $_calendar.append('<div id="arrows"></div>');
 
             // DOM object reference for arrows
-            $_arrows = $('#arrows');
-            $_arrows.append('<div class=\"next\"></div>');
-            $_arrows.append('<div class=\"prev\"></div>');
+            var $_arrows = $('#arrows');
+            $_arrows.append('<div class="next"></div>');
+            $_arrows.append('<div class="prev"></div>');
 
             // Add a clear for the floated elements
-            $_calendar.append('<div class=\"clear\"></div>');
+            $_calendar.append('<div class="clear"></div>');
 
             // Loop over the month arrays, loop over the characters in teh string, and apply to divs.
             $.each(month_array, function (i, o) {
@@ -95,12 +96,12 @@
                 $.each(month_array[i].split(''), function (i, o) {
 
                     // Looping over characters, apply them to divs
-                    $_calendar.append('<div class=\"cell bold\">' + o + '</div>');
+                    $_calendar.append('<div class="cell bold"><span>' + o + '</span></div>');
 
                 });
 
                 // Add a clear for the floated elements
-                $_calendar.append('<div class=\"clear\"></div>');
+                $_calendar.append('<div class="clear"></div>');
 
                 // Check for leap year
                 if (o === 'February') {
@@ -111,7 +112,7 @@
                     }
                 }
 
-                for (j = 1; j <= parseInt(month_days[i]); j++) {
+                for (var j = 1; j <= parseInt(month_days[i]); j++) {
 
                     //
                     // Check for today
@@ -123,15 +124,15 @@
                     }
 
                     // Looping over numbers, apply them to divs
-                    $_calendar.append("<div data-date='" + (parseInt(i) + 1) + '/' + j + '/' + the_year + "' class='cell day " + today + "'>" + j + '</div>');
+                    $_calendar.append("<div data-date='" + (parseInt(i) + 1) + '/' + j + '/' + the_year + "' class='cell day " + today + "'><span>" + j + '</span></div>');
                 }
 
                 // Add a clear for the floated elements
-                $_calendar.append('<div class=\"clear\"></div>');
+                $_calendar.append('<div class="clear"></div>');
             });
 
             // Loop over the elements and show them one by one.
-            for (k = 0; k < $('.cell').length; k++) {
+            for (var k = 0; k < $('.cell').length; k++) {
                 (function (j) {
                     setTimeout(function () {
 

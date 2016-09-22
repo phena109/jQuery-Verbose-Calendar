@@ -21,41 +21,49 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     var pl = null;
     var d = new Date();
 
+    var current = {
+        year: d.getFullYear(),
+        month: d.getMonth(),
+        day_of_month: d.getDate()
+    };
+
+    var start_moment = function() {
+        var output = new Date(d.getFullYear(), 0, 1);
+        return output;
+    };
+
+    var end_moment = function() {
+        var output = new Date(d.getFullYear(), 11, 31, 23, 59, 59);
+        return output;
+    };
+
     // Defaults
     var defaults = {
-        d: d,
-        year: d.getFullYear(),
-        today: d.getDate(),
-        month: d.getMonth(),
-        current_year: d.getFullYear(),
+        year: d.getFullYear(), // The year you want to display in (also ref: start_date and end_date)
         // tipsy_gravity become a fallback, but only support 'n','e','w','s'
         // because that's what supported in bootstrap
         tipsy_gravity: null,
         tooltip_placement: 'top',
         scroll_to_date: true,
-        // New options
+        //
+        // === New options ===
         show_arrows: true,
         highlight_today: true,
+        month_array: [
+            // Must be 12 of them or things will turn funny
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
+        ],
+        // using the start and end date you won't be able use the 'year' option
+        // anymore because they conflict each other conceptually
+//        start_date: start_moment(),
+//        end_date: end_moment()
     };
 
-    var month_array = [
-        'January', 'February', 'March', 'April', 'May', 'June',
-        'July', 'August', 'September', 'October', 'November', 'December'
-    ];
-
     var month_days = [
-        '31', // jan
-        '28', // feb
-        '31', // mar
-        '30', // apr
-        '31', // may
-        '30', // june
-        '31', // july
-        '31', // aug
-        '30', // sept
-        '31', // oct
-        '30', // nov
-        '31' // dec
+        /*
+        J   F   M   A   M   J   J   A   S   O   N   D */
+        31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
     ];
 
     // Main Plugin Object
@@ -76,6 +84,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         this._defaults = defaults;
         this._name = pluginName;
 
+        // Old tipsy opion fallback handling code
         if (this.options.tipsy_gravity !== null) {
             var placement = this.options.tipsy_gravity.substr(0, 1);
             this.options.tooltip_placement = tipsy_fallback_map[placement];
@@ -128,14 +137,14 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             $_calendar.append('<div class="clear-row"></div>');
 
             // Loop over the month arrays, loop over the characters in teh string, and apply to divs.
-            $.each(month_array, function (i, o) {
+            $.each(pl.options.month_array, function (i, o) {
 
                 var lco = o.toLowerCase();
 
                 // Create a scrollto marker
                 $_calendar.append("<div class='" + lco + "'></div>");
 
-                $.each(month_array[i].split(''), function (i, o) {
+                $.each(pl.options.month_array[i].split(''), function (i, o) {
 
                     // Looping over characters, apply them to divs
                     $_calendar.append('<div class="cell bold"><span>' + o + '</span></div>');
@@ -146,7 +155,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 $_calendar.append('<div class="clear-row"></div>');
 
                 // Check for leap year
-                if (lco === 'february') {
+                if (i === 1) { // the second month of the year
                     if (pl.isLeap(the_year)) {
                         month_days[i] = 29;
                     } else {
@@ -158,8 +167,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
                     // Check for today
                     var today = '';
-                    if ((pl.options.highlight_today) && (i === pl.options.month) && (the_year === d.getFullYear())) {
-                        if (j === pl.options.today) {
+                    if ((pl.options.highlight_today) && (i === current.month) && (the_year === d.getFullYear())) {
+                        if (j === current.day_of_month) {
                             today = 'today';
                         }
                     }
@@ -181,7 +190,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                         $($('.cell')[j]).fadeIn('fast', function () {
 
                             $(this).on('click', function () {
-                                if (typeof pl.options.click_callback == 'function') {
+                                if (typeof pl.options.click_callback === 'function') {
                                     var d = $(this).attr('data-date').split("/");
                                     var dObj = {};
                                     dObj.day = d[1];
@@ -197,7 +206,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             }
 
             // Scroll to month
-            if (the_year === pl.options.current_year && pl.options.scroll_to_date) {
+            if (the_year === current.year && pl.options.scroll_to_date) {
                 var print_finished = false;
                 var print_check = setInterval(function () {
                     print_finished = true;
@@ -208,7 +217,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                     });
                     if (print_finished) {
                         clearInterval(print_check);
-                        var _scrollTo = $(pl.element).find('.' + month_array[pl.options.month].toLowerCase());
+                        var _scrollTo = $(pl.element).find('.' + pl.options.month_array[current.month].toLowerCase());
                         $(window).scrollTo(_scrollTo, 800);
                     }
                 }, 200);
@@ -224,7 +233,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         },
         isLeap: function (year) {
             var leap = 0;
-            leap = new Date(year, 1, 29).getMonth() == 1;
+            leap = ((new Date(year, 1, 29).getMonth()) === 1);
             return leap;
         },
         returnFormattedDate: function (date) {

@@ -6,31 +6,49 @@
     var pl = null;
     var d = new Date();
 
+    var current = {
+        year: d.getFullYear(),
+        month: d.getMonth(),
+        day_of_month: d.getDate()
+    };
+
+    var start_moment = function() {
+        var output = new Date(d.getFullYear(), 0, 1);
+        return output;
+    };
+
+    var end_moment = function() {
+        var output = new Date(d.getFullYear(), 11, 31, 23, 59, 59);
+        return output;
+    };
+
     // Defaults
     var defaults = {
-        d: d,
-        year: d.getFullYear(),
-        today: d.getDate(),
-        month: d.getMonth(),
-        current_year: d.getFullYear(),
+        year: d.getFullYear(), // The year you want to display in (also ref: start_date and end_date)
         // tipsy_gravity become a fallback, but only support 'n','e','w','s'
         // because that's what supported in bootstrap
         tipsy_gravity: null,
         tooltip_placement: 'top',
         scroll_to_date: true,
-        // New options
+        //
+        // === New options ===
         show_arrows: true,
         highlight_today: true,
         month_array: [
             // Must be 12 of them or things will turn funny
             'January', 'February', 'March', 'April', 'May', 'June',
             'July', 'August', 'September', 'October', 'November', 'December'
-        ]
+        ],
+        // using the start and end date you won't be able use the 'year' option
+        // anymore because they conflict each other conceptually
+//        start_date: start_moment(),
+//        end_date: end_moment()
     };
 
     var month_days = [
-        //J  F    M    A    M    J    J    A    S    O    N    D
-        '31','28','31','30','31','30','31','31','30','31','30','31'
+        /*
+        J   F   M   A   M   J   J   A   S   O   N   D */
+        31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
     ];
 
     // Main Plugin Object
@@ -122,7 +140,7 @@
                 $_calendar.append('<div class="clear-row"></div>');
 
                 // Check for leap year
-                if (lco === 'february') {
+                if (i === 1) { // the second month of the year
                     if (pl.isLeap(the_year)) {
                         month_days[i] = 29;
                     } else {
@@ -134,8 +152,8 @@
 
                     // Check for today
                     var today = '';
-                    if ((pl.options.highlight_today) && (i === pl.options.month) && (the_year === d.getFullYear())) {
-                        if (j === pl.options.today) {
+                    if ((pl.options.highlight_today) && (i === current.month) && (the_year === d.getFullYear())) {
+                        if (j === current.day_of_month) {
                             today = 'today';
                         }
                     }
@@ -173,7 +191,7 @@
             }
 
             // Scroll to month
-            if (the_year === pl.options.current_year && pl.options.scroll_to_date) {
+            if (the_year === current.year && pl.options.scroll_to_date) {
                 var print_finished = false;
                 var print_check = setInterval(function () {
                     print_finished = true;
@@ -184,7 +202,7 @@
                     });
                     if (print_finished) {
                         clearInterval(print_check);
-                        var _scrollTo = $(pl.element).find('.' + pl.options.month_array[pl.options.month].toLowerCase());
+                        var _scrollTo = $(pl.element).find('.' + pl.options.month_array[current.month].toLowerCase());
                         $(window).scrollTo(_scrollTo, 800);
                     }
                 }, 200);

@@ -12,12 +12,12 @@
         day_of_month: d.getDate()
     };
 
-    var start_moment = function() {
+    var start_moment = function () {
         var output = new Date(d.getFullYear(), 0, 1);
         return output;
     };
 
-    var end_moment = function() {
+    var end_moment = function () {
         var output = new Date(d.getFullYear(), 11, 31, 23, 59, 59);
         return output;
     };
@@ -39,15 +39,17 @@
             'January', 'February', 'March', 'April', 'May', 'June',
             'July', 'August', 'September', 'October', 'November', 'December'
         ],
-        // using the start and end date you won't be able use the 'year' option
-        // anymore because they conflict each other conceptually
-//        start_date: start_moment(),
-//        end_date: end_moment()
+        // using the start and end date you won't be able use the 'year' and
+        // 'show_arrows' option anymore because they conflict to each other
+        // conceptually
+        start_date: start_moment(),
+        end_date: end_moment(),
+        cell_show_speed: 3,
     };
 
     var month_days = [
         /*
-        J   F   M   A   M   J   J   A   S   O   N   D */
+         J   F   M   A   M   J   J   A   S   O   N   D */
         31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
     ];
 
@@ -68,6 +70,7 @@
         this.options = $.extend({}, defaults, options);
         this._defaults = defaults;
         this._name = pluginName;
+        this._register = {};
 
         // Old tipsy opion fallback handling code
         if (this.options.tipsy_gravity !== null) {
@@ -81,32 +84,64 @@
 
     $.extend(Calendar.prototype, {
         init: function () {
+            if (this.mode() === 'range') {
+                this.range_mode();
+            } else {
+                this.year_mode();
+            }
+
             // Call print - who knows, maybe more will be added to the init function...
             this.print();
         },
-        print: function (year) {
-            // Pass in any year you damn like.
-            var the_year = (year) ? parseInt(year) : parseInt(pl.options.year);
+        /**
+         * Get the mode the plugin should operate in. This affects mainly how
+         * the calendar is rendered
+         * @returns {String} [year|range]
+         */
+        mode: function() {
+            var _s = this.options.start_date;
+            var _e = this.options.end_date;
 
-            // First, clear the element
-            $(this.element).empty();
+            var c1 = (_e.getFullYear() - _s.getFullYear() === 0); // Same year
+            var c2 = (_s.getMonth() === 0); // Jan
+            var c3 = (_e.getMonth() === 11); // Dec
 
-            $('.cell').css({
-                display: 'none'
-            });
+            var output = (c1 && c2 && c3) ? 'year' : 'range';
+
+            return output;
+        },
+        year_mode: function() {
+            this.set_year_element(this.options.start_date.getFullYear(), 0, 11);
+        },
+        range_mode: function() {
+            var _s = this.options.start_date;
+            var _e = this.options.end_date;
+            var first_year_start_month = _s.getMonth();
+            var last_year_end_month = _e.getMonth();
+
+            for (var i = _s.getFullYear(); i <= _e.getFullYear(); i++) {
+                if (i === _s.getFullYear()) {
+                    this.set_year_element(i, first_year_start_month, 11);
+                } else if (i === _e.getFullYear()) {
+                    this.set_year_element(i, 0, last_year_end_month);
+                } else {
+                    this.set_year_element(i, 0, 11);
+                }
+            }
+        },
+        set_year_element: function (year, start_month, end_month) {
 
             // Set reference for calendar DOM object
-            var $_calendar = $('<div class="calendar"></div>');
-
-            // Append parent div to the element
-            $(this.element).append($_calendar);
+            var $_calendar = $('<div class="calendar" data-year="' + year + '"></div>');
 
             // Let's append the year
-            $.each(the_year.toString().split(''), function (i, o) {
+            $.each(year.toString().split(''), function (i, o) {
                 $_calendar.append('<div class="year"><span>' + o + '</span></div>');
             });
 
-            if (pl.options.show_arrows) {
+            // For future prove this should be put elsewhere, but putting here,
+            // in most case, is fine.
+            if ((this.mode() === 'year') && (pl.options.show_arrows === true)) {
 
                 // DOM object reference for arrows
                 var _arrow_obj = $('<div class="arrows"></div>');
@@ -115,7 +150,6 @@
 
                 // Navigation arrows
                 $_calendar.append(_arrow_obj);
-
             }
 
             // Add a clear for the floated elements
@@ -123,6 +157,11 @@
 
             // Loop over the month arrays, loop over the characters in teh string, and apply to divs.
             $.each(pl.options.month_array, function (i, o) {
+
+                // If the current month is out of the month range, skip
+                if (!((i >= start_month) && (i <= end_month))) {
+                    return;
+                }
 
                 var lco = o.toLowerCase();
 
@@ -132,7 +171,8 @@
                 $.each(pl.options.month_array[i].split(''), function (i, o) {
 
                     // Looping over characters, apply them to divs
-                    $_calendar.append('<div class="cell bold"><span>' + o + '</span></div>');
+                    var $_month = $('<div class="cell bold"><span>' + o + '</span></div>');
+                    $_calendar.append($_month);
 
                 });
 
@@ -141,7 +181,7 @@
 
                 // Check for leap year
                 if (i === 1) { // the second month of the year
-                    if (pl.isLeap(the_year)) {
+                    if (pl.is_leap(year)) {
                         month_days[i] = 29;
                     } else {
                         month_days[i] = 28;
@@ -152,19 +192,45 @@
 
                     // Check for today
                     var today = '';
-                    if ((pl.options.highlight_today) && (i === current.month) && (the_year === d.getFullYear())) {
+                    if ((pl.options.highlight_today) && (i === current.month) && (year === d.getFullYear())) {
                         if (j === current.day_of_month) {
                             today = 'today';
                         }
                     }
 
                     // Looping over numbers, apply them to divs
-                    $_calendar.append("<div data-date='" + (parseInt(i) + 1) + '/' + j + '/' + the_year + "' class='cell day " + today + "'><span>" + j + '</span></div>');
+                    var $_day = $("<div data-date='" + (parseInt(i) + 1) + '/' + j + '/' + year + "' class='cell day " + today + "'><span>" + j + "</span></div>");
+                    $_calendar.append($_day);
                 }
 
                 // Add a clear for the floated elements
                 $_calendar.append('<div class="clear-row"></div>');
             });
+
+            this._register[year] = $_calendar;
+        },
+        print: function(year) {
+            var $element = $(this.element);
+            var the_year = (year) ? parseInt(year) : parseInt(pl.options.year);
+
+            // First, clear the element
+            $element.empty();
+
+            // Base on the mode, render differently
+            if (this.mode() === 'range') {
+                var container = $(this.element);
+
+                $.each(this._register, function(idx,ele) {
+                    container.append(ele);
+                });
+            } else {
+                // The the register doesn't have the data yet, generate on the fly
+                if (!this._register[the_year]) {
+                    this.set_year_element(the_year, 0, 11);
+                }
+
+                $(this.element).append(this._register[the_year]);
+            }
 
             // Loop over the elements and show them one by one.
             for (var k = 0; k < $('.cell').length; k++) {
@@ -172,23 +238,23 @@
                     setTimeout(function () {
 
                         // Fade the cells in
-                        $($('.cell')[j]).fadeIn('fast', function () {
+                        $($('.cell')[j]).fadeIn('fast');
 
-                            $(this).on('click', function () {
-                                if (typeof pl.options.click_callback === 'function') {
-                                    var d = $(this).attr('data-date').split("/");
-                                    var dObj = {};
-                                    dObj.day = d[1];
-                                    dObj.month = d[0];
-                                    dObj.year = d[2];
-                                    pl.options.click_callback.call(this, dObj);
-                                }
-                            });
-                        });
-
-                    }, (k * 3));
+                    }, (k * pl.options.cell_show_speed));
                 })(k);
             }
+
+            // Delegate the event handler
+            $element.on('click', '.cell', function () {
+                if (typeof pl.options.click_callback === 'function') {
+                    var d = $(this).attr('data-date').split("/");
+                    var dObj = {};
+                    dObj.day = d[1];
+                    dObj.month = d[0];
+                    dObj.year = d[2];
+                    pl.options.click_callback.call(this, dObj);
+                }
+            });
 
             // Scroll to month
             if (the_year === current.year && pl.options.scroll_to_date) {
@@ -202,7 +268,7 @@
                     });
                     if (print_finished) {
                         clearInterval(print_check);
-                        var _scrollTo = $(pl.element).find('.' + pl.options.month_array[current.month].toLowerCase());
+                        var _scrollTo = $(pl.element).find('.calendar[data-year=' + the_year + '] .' + pl.options.month_array[current.month].toLowerCase());
                         $(window).scrollTo(_scrollTo, 800);
                     }
                 }, 200);
@@ -216,7 +282,7 @@
                 }
             });
         },
-        isLeap: function (year) {
+        is_leap: function (year) {
             var leap = 0;
             leap = ((new Date(year, 1, 29).getMonth()) === 1);
             return leap;

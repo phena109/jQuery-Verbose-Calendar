@@ -17,7 +17,10 @@
         // because that's what supported in bootstrap
         tipsy_gravity: null,
         tooltip_placement: 'top',
-        scroll_to_date: true
+        scroll_to_date: true,
+        // New options
+        show_arrows: true,
+        highlight_today: true,
     };
 
     var month_array = [
@@ -94,13 +97,17 @@
                 $_calendar.append('<div class="year"><span>' + o + '</span></div>');
             });
 
-            // DOM object reference for arrows
-            var _arrow_obj = $('<div class="arrows"></div>');
-            _arrow_obj.append('<div class="next"></div>');
-            _arrow_obj.append('<div class="prev"></div>');
+            if (pl.options.show_arrows) {
 
-            // Navigation arrows
-            $_calendar.append(_arrow_obj);
+                // DOM object reference for arrows
+                var _arrow_obj = $('<div class="arrows"></div>');
+                _arrow_obj.append('<div class="next"></div>');
+                _arrow_obj.append('<div class="prev"></div>');
+
+                // Navigation arrows
+                $_calendar.append(_arrow_obj);
+
+            }
 
             // Add a clear for the floated elements
             $_calendar.append('<div class="clear-row"></div>');
@@ -136,7 +143,7 @@
 
                     // Check for today
                     var today = '';
-                    if (i === pl.options.month && the_year === d.getFullYear()) {
+                    if ((pl.options.highlight_today) && (i === pl.options.month) && (the_year === d.getFullYear())) {
                         if (j === pl.options.today) {
                             today = 'today';
                         }
@@ -186,7 +193,8 @@
                     });
                     if (print_finished) {
                         clearInterval(print_check);
-                        $(window).scrollTo($('#' + month_array[pl.options.month]), 800);
+                        var _scrollTo = $(pl.element).find('.' + month_array[pl.options.month].toLowerCase());
+                        $(window).scrollTo(_scrollTo, 800);
                     }
                 }, 200);
             }

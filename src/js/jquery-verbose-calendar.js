@@ -49,7 +49,7 @@
 
     var month_days = [
         /*
-         J   F   M   A   M   J   J   A   S   O   N   D */
+        J   F   M   A   M   J   J   A   S   O   N   D */
         31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
     ];
 

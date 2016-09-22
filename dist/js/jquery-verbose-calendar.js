@@ -1,5 +1,5 @@
 /*
- * jquery-verbose-calendar v0.2.0 - 2016-09-22
+ * jquery-verbose-calendar v0.3.0 - 2016-09-22
  * https://github.com/phena109/jQuery-Verbose-Calendar#readme
 
 MIT License
@@ -64,7 +64,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
     var month_days = [
         /*
-        J   F   M   A   M   J   J   A   S   O   N   D */
+         J   F   M   A   M   J   J   A   S   O   N   D */
         31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
     ];
 
@@ -113,7 +113,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
          * the calendar is rendered
          * @returns {String} [year|range]
          */
-        mode: function() {
+        mode: function () {
             var _s = this.options.start_date;
             var _e = this.options.end_date;
 
@@ -125,10 +125,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
             return output;
         },
-        year_mode: function() {
+        year_mode: function () {
             this.set_year_element(this.options.start_date.getFullYear(), 0, 11);
         },
-        range_mode: function() {
+        range_mode: function () {
             var _s = this.options.start_date;
             var _e = this.options.end_date;
             var first_year_start_month = _s.getMonth();
@@ -224,7 +224,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
             this._register[year] = $_calendar;
         },
-        print: function(year) {
+        print: function (year) {
             var $element = $(this.element);
             var the_year = (year) ? parseInt(year) : parseInt(pl.options.year);
 
@@ -235,7 +235,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             if (this.mode() === 'range') {
                 var container = $(this.element);
 
-                $.each(this._register, function(idx,ele) {
+                $.each(this._register, function (idx, ele) {
                     container.append(ele);
                 });
             } else {

@@ -1,6 +1,6 @@
 {
     "name": "jquery-verbose-calendar",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "description": "Why another jQuery calendar? I needed something very specific for a personal project which led me to created this calendar. After making it I thought it was pretty neat-o :)",
     "main": "dist/js/jquery-verbose-calendar.js",
     "dependencies": {

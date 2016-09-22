@@ -49,7 +49,7 @@
 
     var month_days = [
         /*
-        J   F   M   A   M   J   J   A   S   O   N   D */
+         J   F   M   A   M   J   J   A   S   O   N   D */
         31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
     ];
 
@@ -98,7 +98,7 @@
          * the calendar is rendered
          * @returns {String} [year|range]
          */
-        mode: function() {
+        mode: function () {
             var _s = this.options.start_date;
             var _e = this.options.end_date;
 
@@ -110,10 +110,10 @@
 
             return output;
         },
-        year_mode: function() {
+        year_mode: function () {
             this.set_year_element(this.options.start_date.getFullYear(), 0, 11);
         },
-        range_mode: function() {
+        range_mode: function () {
             var _s = this.options.start_date;
             var _e = this.options.end_date;
             var first_year_start_month = _s.getMonth();
@@ -209,7 +209,7 @@
 
             this._register[year] = $_calendar;
         },
-        print: function(year) {
+        print: function (year) {
             var $element = $(this.element);
             var the_year = (year) ? parseInt(year) : parseInt(pl.options.year);
 
@@ -220,7 +220,7 @@
             if (this.mode() === 'range') {
                 var container = $(this.element);
 
-                $.each(this._register, function(idx,ele) {
+                $.each(this._register, function (idx, ele) {
                     container.append(ele);
                 });
             } else {

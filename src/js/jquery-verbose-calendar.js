@@ -22,24 +22,15 @@
         show_arrows: true,
         highlight_today: true,
         month_array: [
+            // Must be 12 of them or things will turn funny
             'January', 'February', 'March', 'April', 'May', 'June',
             'July', 'August', 'September', 'October', 'November', 'December'
         ]
     };
 
     var month_days = [
-        '31', // jan
-        '28', // feb
-        '31', // mar
-        '30', // apr
-        '31', // may
-        '30', // june
-        '31', // july
-        '31', // aug
-        '30', // sept
-        '31', // oct
-        '30', // nov
-        '31' // dec
+        //J  F    M    A    M    J    J    A    S    O    N    D
+        '31','28','31','30','31','30','31','31','30','31','30','31'
     ];
 
     // Main Plugin Object
@@ -60,6 +51,7 @@
         this._defaults = defaults;
         this._name = pluginName;
 
+        // Old tipsy opion fallback handling code
         if (this.options.tipsy_gravity !== null) {
             var placement = this.options.tipsy_gravity.substr(0, 1);
             this.options.tooltip_placement = tipsy_fallback_map[placement];
@@ -165,7 +157,7 @@
                         $($('.cell')[j]).fadeIn('fast', function () {
 
                             $(this).on('click', function () {
-                                if (typeof pl.options.click_callback == 'function') {
+                                if (typeof pl.options.click_callback === 'function') {
                                     var d = $(this).attr('data-date').split("/");
                                     var dObj = {};
                                     dObj.day = d[1];
@@ -208,7 +200,7 @@
         },
         isLeap: function (year) {
             var leap = 0;
-            leap = new Date(year, 1, 29).getMonth() == 1;
+            leap = ((new Date(year, 1, 29).getMonth()) === 1);
             return leap;
         },
         returnFormattedDate: function (date) {

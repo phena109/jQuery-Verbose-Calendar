@@ -26,7 +26,7 @@ composer require bower-asset/jquery-verbose-calendar
 ```
 
 # Usage
-```
+```javascript
     $(document).ready(function() {
     	$("#calendar-container").calendar({
 			tipsy_gravity: 's', // How do you want to anchor the tipsy notification? (n / s / e / w)
@@ -40,6 +40,20 @@ composer require bower-asset/jquery-verbose-calendar
  ```
 
 NOTE: the current usage example is sourced from the original version. While it still work, as far as I hand tested. If things it is broken, please do raise a ticket and let me know.
+# Options
+
+| Option | Possible Value | Default | Explanation |
+| --- | --- | --- | --- |
+| year | | | The year you want to display in (also ref: start_date and end_date) |
+| tipsy_gravity | 'n','e','w','s' | 's' | tipsy_gravity become a fallback, but only support 'n','e','w','s'. because that's what supported in bootstrap |
+| tooltip_placement | 'top','bottom','left','right' | 'top' | The new tipsy_gravity option and it take precedent than tooltip_placement. if using tooltip_placement, this will become the option to feed to bootstrap tooptip library |
+| scroll_to_date | true, false | true | this option is set to true for backward compatibility purpose because the original plugin is default to true |
+| show_arrows | true, false | true | As the option implied. (also ref: start_date and end_date) |
+| highlight_today | true, false | true | As the option implied. (also ref: start_date and end_date) |
+| month_array || ['January', 'February', 'March', 'April', 'May', 'June',            'July', 'August', 'September', 'October', 'November', 'December'] | To customise what text to show for the months. Note: Must be 12 of them or things will turn funny |
+| cell_show_speed || 3 | The speed coefficuent determines how fast/slow the date cells and month cells shows up |
+| start_date ||||
+| end_date ||||
 
 # License (MIT)
 

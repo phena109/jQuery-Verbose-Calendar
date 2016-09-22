@@ -21,12 +21,11 @@
         // New options
         show_arrows: true,
         highlight_today: true,
+        month_array: [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
+        ]
     };
-
-    var month_array = [
-        'January', 'February', 'March', 'April', 'May', 'June',
-        'July', 'August', 'September', 'October', 'November', 'December'
-    ];
 
     var month_days = [
         '31', // jan
@@ -113,14 +112,14 @@
             $_calendar.append('<div class="clear-row"></div>');
 
             // Loop over the month arrays, loop over the characters in teh string, and apply to divs.
-            $.each(month_array, function (i, o) {
+            $.each(pl.options.month_array, function (i, o) {
 
                 var lco = o.toLowerCase();
 
                 // Create a scrollto marker
                 $_calendar.append("<div class='" + lco + "'></div>");
 
-                $.each(month_array[i].split(''), function (i, o) {
+                $.each(pl.options.month_array[i].split(''), function (i, o) {
 
                     // Looping over characters, apply them to divs
                     $_calendar.append('<div class="cell bold"><span>' + o + '</span></div>');
@@ -193,7 +192,7 @@
                     });
                     if (print_finished) {
                         clearInterval(print_check);
-                        var _scrollTo = $(pl.element).find('.' + month_array[pl.options.month].toLowerCase());
+                        var _scrollTo = $(pl.element).find('.' + pl.options.month_array[pl.options.month].toLowerCase());
                         $(window).scrollTo(_scrollTo, 800);
                     }
                 }, 200);

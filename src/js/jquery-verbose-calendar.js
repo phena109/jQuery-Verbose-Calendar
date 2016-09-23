@@ -70,7 +70,7 @@
         this.options = $.extend({}, defaults, options);
         this._defaults = defaults;
         this._name = pluginName;
-        this._register = {};
+        this._register = {}; // the cache
 
         // Old tipsy opion fallback handling code
         if (this.options.tipsy_gravity !== null) {
@@ -78,8 +78,10 @@
             this.options.tooltip_placement = tipsy_fallback_map[placement];
         }
 
-        // Begin
+        // Init
+        this.onBeforeInit(this);
         this.init();
+        this.onAfterInit(this);
     }
 
     $.extend(Calendar.prototype, {
@@ -89,9 +91,6 @@
             } else {
                 this.year_mode();
             }
-
-            // Call print - who knows, maybe more will be added to the init function...
-            this.print();
         },
         /**
          * Get the mode the plugin should operate in. This affects mainly how
@@ -254,7 +253,8 @@
                 })(k);
             }
 
-            // Delegate the event handler
+            // click_callback, it is still here for backward compatibility
+            // please use the event handlers instead
             $element.on('click', '.cell', function () {
                 if (typeof pl.options.click_callback === 'function') {
                     var d = $(this).attr('data-date').split("/");
@@ -265,6 +265,8 @@
                     pl.options.click_callback.call(this, dObj);
                 }
             });
+
+            $element.on('click', '.cell.day', pl.options.onDateClick);
 
             // Scroll to month
             if (the_year === current.year && pl.options.scroll_to_date) {
@@ -319,7 +321,11 @@
             }
 
             return returned_date;
-        }
+        },
+        // Event handler
+        onBeforeInit: function(e) {}, // not a proper event handler
+        onAfterInit: function(e) {}, // not a proper event handler
+        onDateClick: function(e) {}
     });
 
     // Previous / Next Year on click events
@@ -339,7 +345,9 @@
     $.fn[pluginName] = function (options) {
         return this.each(function () {
             if (!$.data(this, "plugin_" + pluginName)) {
-                $.data(this, "plugin_" + pluginName, new Calendar(this, options));
+                var calendar = new Calendar(this, options);
+                $.data(this, "plugin_" + pluginName, calendar);
+                calendar.print();
             }
         });
     };

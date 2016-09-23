@@ -57,6 +57,7 @@ NOTE: the current usage example is sourced from the original version. While it s
 
 # Event Handlers
 The plugin has predefined some event handler for expandability
+
 | Option | Explanation |
 | --- | --- |
 | onBeforeInit | Called before the init function get executed |

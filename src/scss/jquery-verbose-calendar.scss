@@ -6,8 +6,8 @@
 
 .calendar {
 
-    $year_size: 99px;
     $cell_size: 49px;
+    $year_size: (($cell_size + 1px) * 2) - 1px;
 
     .cell, .year {
         text-align: center;

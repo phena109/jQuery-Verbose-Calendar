@@ -119,14 +119,24 @@
             var first_year_start_month = _s.getMonth();
             var last_year_end_month = _e.getMonth();
 
+            // Prepare the cache
             for (var i = _s.getFullYear(); i <= _e.getFullYear(); i++) {
+
                 if (i === _s.getFullYear()) {
-                    this.set_year_element(i, first_year_start_month, 11);
+
+                    // The case where date range is just within the same year
+                    if (i === _e.getFullYear()) {
+                        this.set_year_element(i, first_year_start_month, last_year_end_month);
+                    } else {
+                        this.set_year_element(i, first_year_start_month, 11);
+                    }
+
                 } else if (i === _e.getFullYear()) {
                     this.set_year_element(i, 0, last_year_end_month);
                 } else {
                     this.set_year_element(i, 0, 11);
                 }
+
             }
         },
         set_year_element: function (year, start_month, end_month) {

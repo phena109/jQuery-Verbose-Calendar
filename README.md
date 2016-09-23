@@ -55,6 +55,15 @@ NOTE: the current usage example is sourced from the original version. While it s
 | start_date ||||
 | end_date ||||
 
+# Event Handlers
+The plugin has predefined some event handler for expandability
+| Option | Explanation |
+| --- | --- |
+| onBeforeInit | Called before the init function get executed |
+| onAfterInit | Called after the init function get executed |
+| onDateClick | Delegated handler when either dates are clicked |
+| click_callback | 'Event handler' from the original. This is retained for backward compatibility. Instead of passing in usual event object, the plugin will pass in the date which has been clicked |
+
 # License (MIT)
 
 Copyright (C) 2012~2016 John Patrick Given, phena109
@@ -64,4 +73,3 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-

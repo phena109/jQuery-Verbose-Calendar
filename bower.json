@@ -19,5 +19,5 @@
     "jquery.scrollTo": ">=2.1.2",
     "bootstrap": ">=3.3.0"
   },
-  "version": "0.3.0"
+  "version": "0.3.1"
 }

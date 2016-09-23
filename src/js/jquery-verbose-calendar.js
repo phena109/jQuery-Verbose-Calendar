@@ -44,7 +44,7 @@
         // conceptually
         start_date: start_moment(),
         end_date: end_moment(),
-        cell_show_speed: 3,
+        cell_show_speed: 3
     };
 
     var month_days = [
@@ -301,6 +301,7 @@
         },
         returnFormattedDate: function (date) {
             var returned_date;
+            // US date format
             var d = new Date(date);
             var da = d.getDay();
 
@@ -323,9 +324,9 @@
             return returned_date;
         },
         // Event handler
-        onBeforeInit: function(e) {}, // not a proper event handler
-        onAfterInit: function(e) {}, // not a proper event handler
-        onDateClick: function(e) {}
+        onBeforeInit: function (e) {}, // not a proper event handler
+        onAfterInit: function (e) {}, // not a proper event handler
+        onDateClick: function (e) {}
     });
 
     // Previous / Next Year on click events
